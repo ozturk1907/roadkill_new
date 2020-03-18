@@ -22,10 +22,10 @@ namespace Roadkill.Tests.Unit.Api.Controllers
 {
 	public sealed class AuthorizationControllerTests
 	{
-		private AuthorizationController _authorizationController;
-		private UserManager<RoadkillIdentityUser> _userManagerMock;
-		private SignInManager<RoadkillIdentityUser> _signinManagerMock;
-		private IJwtTokenService _jwtTokenService;
+		private readonly AuthorizationController _authorizationController;
+		private readonly UserManager<RoadkillIdentityUser> _userManagerMock;
+		private readonly SignInManager<RoadkillIdentityUser> _signinManagerMock;
+		private readonly IJwtTokenService _jwtTokenService;
 
 		public AuthorizationControllerTests()
 		{
@@ -111,15 +111,16 @@ namespace Roadkill.Tests.Unit.Api.Controllers
 				.Returns(Task.FromResult(claims));
 
 			_jwtTokenService
-				.CreateToken(claims, roadkillUser.Email)
+				.CreateJwtToken(claims, roadkillUser.Email)
 				.Returns(jwtToken);
 
 			var httpContext = new DefaultHttpContext();
 			httpContext.Connection.RemoteIpAddress = IPAddress.Parse(ipAddress);
 			_authorizationController.ControllerContext.HttpContext = httpContext;
 
+			// TODO
 			_jwtTokenService
-				.CreateRefreshToken(roadkillUser.Email, ipAddress)
+				.StoreRefreshToken("TODO jwttoken", "TODO refresh token", email, ipAddress)
 				.Returns(refreshToken);
 
 			// when
@@ -197,4 +198,11 @@ namespace Roadkill.Tests.Unit.Api.Controllers
 			statusCodeResult.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
 		}
 	}
+
+	// TODO
+	// RefreshToken_should_return_404_when_token_not_found
+	// RefreshToken_should_find_refresh_token_and_create_new_jwt_token
+	// RefreshToken
+	// RefreshToken
+
 }
